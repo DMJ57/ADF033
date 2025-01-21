@@ -1,5 +1,4 @@
 param dataFactoryName string
-param resourceGroupName string
 
 resource dataFactory 'Microsoft.DataFactory/factories@2020-12-01' existing = {
   name: dataFactoryName
