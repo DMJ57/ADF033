@@ -41,16 +41,17 @@ jobs:
         run: |
           az deployment group validate \
             --resource-group komatsu \
-            --template-file ./bicep/main.bicep \
-            --parameters @./bicep/parameters.json
+            --template-file ./bicep/adfapplication.bicep \
+            --parameters dataFactoryName=ADF033
+
   
       # Step 5: Deploy Bicep Template
       - name: Deploy Bicep Template
         run: |
           az deployment group create \
             --resource-group komatsu \
-            --template-file ./bicep/main.bicep \
-            --parameters @./bicep/parameters.json
+            --template-file ./bicep/adfapplication.bicep \
+            --parameters dataFactoryName=ADF033
 
       # # Step 6: Deploy Bicep Template for keyvault
       # - name: Deploy Bicep Template
