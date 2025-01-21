@@ -10,7 +10,7 @@ resource pipelineDeploy 'Microsoft.Resources/deployments@2021-04-01' = {
     properties: {
       mode: 'Incremental'
       templateLink: {
-        uri: 'https://github.com/DMJ57/ADF033/blob/main/pipeline/TestPipeline.json'
+        uri: 'https://raw.githubusercontent.com/DMJ57/ADF033/main/pipeline/TestPipeline.json'
       }
     }
   }
