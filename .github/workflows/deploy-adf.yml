@@ -33,9 +33,9 @@ jobs:
 
     - name: Read pipeline JSON files and deploy
       run: |
-        # Read the content of pipeline1.json and pipeline2.json
-        pipeline1=$(cat ./pipeline/Testpipeline1.json)
-        pipeline2=$(cat ./pipeline/AdobeExportPipeline.json)
+        # Ensure the correct path to the JSON files
+        pipeline1=$(cat ./pipelines/Testpipeline1.json)
+        pipeline2=$(cat ./pipelines/AdobeExportPipeline.json)
         
         # Construct a JSON array with the pipeline contents
         pipelines=$(jq -n \
