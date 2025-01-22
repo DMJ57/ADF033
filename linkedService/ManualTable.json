@@ -1,5 +1,5 @@
 {
-	"name": "BicepTable",
+	"name": "ManualTable",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],

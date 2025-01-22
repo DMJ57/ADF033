@@ -47,7 +47,7 @@ jobs:
               "definition": $linkedService1 | fromjson
             },
             {
-              "name": "BicepTable",
+              "name": "ManualTable",
               "definition": $linkedService2 | fromjson
             }
           ]')
