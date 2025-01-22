@@ -3,90 +3,54 @@ name: Deploy ADF Pipelines
 on:
   push:
     branches:
-     The workflow is failing because the action `azure/setup-azurecli@v1` could not be resolved. This action might be - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest deprecated or incorrectly referenced. You can replace it with a maintained and correctly referenced action.
-
-
-
-    steps:
-      - name: Checkout code
-        uses:Here is the updated workflow file:
-
-```yaml
-name: Deploy actions/checkout@v2
-
-      - name: Set up Azure CLI ADF Pipelines
-
-on:
-  push:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
     branches:
-     
-        uses: azure/CLI@v1
-        with:
-          azure-cli-version: '2.30.0'
-
-      - name: Install jq
- - main  # Trigger the workflow on push to the main        run: sudo apt-get install jq
-
-      - name: branch
+      - main  # Trigger the workflow on pull requests to the main branch
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest Login to Azure
-        uses: azure/login@v1
-        with
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses::
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Read JSON files and Deploy ADF Pipelines actions/checkout@v2
+      uses: actions/checkout@v2
 
     - name: Set up Azure CLI
-
-        run: |
-          pipeline1=$(cat ./pipelines/Testpipeline1.json)
-          pipeline2      uses: azure/CLI@v1  # Correct action reference
-      with:
-        version: '2.30.0'  # Specify the version if=$(cat ./pipelines/AdobeExportPipeline.json)
-          
-          pipelines=$(jq -n \
-            --arg pipeline1 necessary
+      uses: azure/setup-azurecli@v1
 
     - name: Install jq
-      run "$pipeline1" \
-            --arg pipeline2 "$pipeline2: sudo apt-get install jq
+      run: sudo apt-get install jq
 
-    - name: Login to Azure" \
-            '[
-              {
-                "name": "TestPipeline1",
-                "definition": $pipeline1 | fromjson
-              },
-              {
-
+    - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds:                "name": "AdobeExportPipeline",
-                "definition": $pipeline2 | fromjson
- ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}  # Make sure to store your Azure credentials as secrets
 
-    - name: Read              }
-            ]')
-
-          az deployment sub create JSON files and Deploy ADF Pipelines
+    - name: Read pipeline JSON files and deploy
       run: |
- \
-            --location eastus \
-            --        # Read the content of pipeline1.json and pipelinetemplate-file ./adf/adfpipeline.bicep \
-            --parameters dataFactoryName=myDataFactory \
-            --2.json
-        pipeline1=$(cat ./pipelines/Testpipelineparameters pipelines="$pipelines"
-```1.json)
-        pipeline2=$(cat ./pipelines/AdobeExportPipeline.json)
+        # Read the content of pipeline1.json and pipeline2.json
+        pipeline1=$(cat ./pipeline/Testpipeline1.json)
+        pipeline2=$(cat ./pipeline/AdobeExportPipeline.json)
         
-        # Construct the JSON object with the pipeline contents
+        # Construct a JSON array with the pipeline contents
+        pipelines=$(jq -n \
+          --arg pipeline1 "$pipeline1" \
+          --arg pipeline2 "$pipeline2" \
+          '[
+            {
+              "name": "TestPipeline1",
+              "definition": $pipeline1 | fromjson
+            },
+            {
+              "name": "AdobeExportPipeline",
+              "definition": $pipeline2 | fromjson
+            }
+          ]')
+
+        # Deploy using Bicep (or ARM template)
+        az deployment sub create \
+          --location eastus \
+          --template-file ./bicep/modules/testadf.bicep \
+          --parameters dataFactoryName=ADF033 \
+          --parameters pipelines="$pipelines"
