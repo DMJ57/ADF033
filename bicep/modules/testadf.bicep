@@ -1,3 +1,5 @@
+targetScope = 'resourceGroup'  // Set targetScope to resourceGroup
+
 param dataFactoryName string
 param pipelines array
 
