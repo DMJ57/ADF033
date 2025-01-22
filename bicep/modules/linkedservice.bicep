@@ -21,9 +21,8 @@ param storageAccount1 string = 'Y4Fo0vh4xap7U+VravqaJftr++ToUycBATaNeOJ1eLNJZkKy
 // }]
 
 resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2022-10-01' = [for linkedService in linkedServices: {
-  
   parent: dataFactory
-  name: '${dataFactory.name}/${linkedService.name}'  // Corrected name format
+  name: linkedService.name  // Removed the ${dataFactory.name}/ part
   properties: {
     type: 'AzureBlobStorage'
     typeProperties: {
