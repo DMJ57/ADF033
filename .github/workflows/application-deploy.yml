@@ -35,20 +35,14 @@ jobs:
       run: |
         # Ensure the correct path to the JSON files
         linkedService1=$(cat ./linkedService/TestLinkedService.json)
-        linkedService2=$(cat ./linkedService/ManualTable.json)
 
         # Construct a JSON array with the pipeline contents
         linkedServices=$(jq -n \
           --arg linkedService1 "$linkedService1" \
-          --arg linkedService2 "$linkedService2" \
           '[
             {
               "name": "TestLinkedService",
               "definition": $linkedService1 | fromjson
-            },
-            {
-              "name": "ManualTable",
-              "definition": $linkedService2 | fromjson
             }
           ]')
 
