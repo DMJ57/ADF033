@@ -41,7 +41,7 @@ jobs:
         run: |
           az deployment group validate \
             --resource-group komatsu \
-            --template-file ./bicep/modules/adfapplication.bicep \
+            --template-file ./bicep/modules/testadf.bicep \
             --parameters dataFactoryName=ADF033
 
   
@@ -50,7 +50,7 @@ jobs:
         run: |
           az deployment group create \
             --resource-group komatsu \
-            --template-file ./bicep/modules/adfapplication.bicep \
+            --template-file ./bicep/modules/testadf.bicep \
             --parameters dataFactoryName=ADF033
 
       # # Step 6: Deploy Bicep Template for keyvault
