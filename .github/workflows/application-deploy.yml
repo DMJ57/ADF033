@@ -51,4 +51,4 @@ jobs:
           --resource-group "komatsu" \
           --template-file ./bicep/modules/linkedservice.bicep \
           --parameters dataFactoryName=ADF033 \
-          --parameters linkedService="$linkedServices"
+          --parameters linkedServices="$linkedServices"
