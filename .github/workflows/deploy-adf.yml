@@ -20,8 +20,6 @@ jobs:
       uses: azure/CLI@v1
       with:
         azcliversion: '2.30.0'  # Correct input for specifying Azure CLI version
-        inlineScript: |
-          az --version  # Example inline script to verify Azure CLI setup
 
     - name: Install jq
       run: sudo apt-get install jq
@@ -34,8 +32,8 @@ jobs:
     - name: Read pipeline JSON files and deploy
       run: |
         # Ensure the correct path to the JSON files
-        pipeline1=$(cat ./pipelines/TestPipeline1.json)
-        pipeline2=$(cat ./pipelines/AdobeExportPipeline.json)
+        pipeline1=$(cat ./pipeline/TestPipeline1.json)
+        pipeline2=$(cat ./pipeline/AdobeExportPipeline.json)
         
         # Construct a JSON array with the pipeline contents
         pipelines=$(jq -n \
