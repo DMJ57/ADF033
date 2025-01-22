@@ -1,0 +1,38 @@
+param factoryName string
+param location string = resourceGroup().location
+
+param linkedServiceFile string
+param datasetFile string
+param pipelineFile string
+
+resource factory 'Microsoft.DataFactory/factories@2018-06-01' = {
+  name: factoryName
+  location: location
+}
+
+// Deploy Linked Service (using the external JSON file)
+resource linkedServiceDeployment 'Microsoft.Resources/deployments@2021-04-01' = {
+  name: 'linkedServiceDeployment'
+  properties: {
+    mode: 'Incremental'
+    template: json(loadTextContent(linkedServiceFile))
+  }
+}
+
+// Deploy Dataset (using the external JSON file)
+resource datasetDeployment 'Microsoft.Resources/deployments@2021-04-01' = {
+  name: 'datasetDeployment'
+  properties: {
+    mode: 'Incremental'
+    template: json(loadTextContent(datasetFile))
+  }
+}
+
+// Deploy Pipeline (using the external JSON file)
+resource pipelineDeployment 'Microsoft.Resources/deployments@2021-04-01' = {
+  name: 'pipelineDeployment'
+  properties: {
+    mode: 'Incremental'
+    template: json(loadTextContent(pipelineFile))
+  }
+}
