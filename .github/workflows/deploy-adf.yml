@@ -20,6 +20,8 @@ jobs:
       uses: azure/CLI@v1
       with:
         azcliversion: '2.30.0'  # Correct input for specifying Azure CLI version
+        inlineScript: |
+          az --version  # Example inline script to verify Azure CLI setup
 
     - name: Install jq
       run: sudo apt-get install jq
