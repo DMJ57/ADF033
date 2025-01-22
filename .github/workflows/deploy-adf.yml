@@ -17,9 +17,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up Azure CLI
-      uses: azure/CLI@v1  # Correct action reference
+      uses: azure/CLI@v1
       with:
-        version: '2.30.0'  # Specify the Azure CLI version if necessary
+        azcliversion: '2.30.0'  # Correct input for specifying Azure CLI version
 
     - name: Install jq
       run: sudo apt-get install jq
