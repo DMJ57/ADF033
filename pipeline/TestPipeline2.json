@@ -1,0 +1,33 @@
+{
+  "name": "AdobeExportPipeline",
+  "properties": {
+    "activities": [
+      {
+        "name": "CopyAdobeAnalyticsData",
+        "type": "Copy",
+        "linkedServiceName": {
+          "referenceName": "AdobeAnalyticsLinkedService",
+          "type": "LinkedServiceReference"
+        },
+        "source": {
+          "type": "RestSource",
+          "typeProperties": {
+            "requestMethod": "GET",
+            "relativeUrl": "/api/v1/dataExport",
+            "requestBody": "{ \"startDate\": \"2024-01-01\", \"endDate\": \"2024-01-31\", \"metrics\": [\"pageviews\", \"visits\"], \"dimensions\": [\"page\", \"browser\"] }"
+          }
+        },
+        "sink": {
+          "type": "AzureBlobSink",
+          "typeProperties": {
+            "blobPath": "adobe-exports/analytics-data/",
+            "format": {
+              "type": "JsonFormat"
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {}
+  }
+}
