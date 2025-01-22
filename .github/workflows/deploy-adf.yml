@@ -53,7 +53,7 @@ jobs:
           ]')
 
         # Deploy using Bicep (or ARM template)
-        az deployment sub create \
+        az deployment group create \
           --location eastus \
           --template-file ./bicep/modules/testadf.bicep \
           --parameters dataFactoryName=ADF033 \
