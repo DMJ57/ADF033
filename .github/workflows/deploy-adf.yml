@@ -27,8 +27,8 @@ jobs:
     - name: Read JSON files and Deploy ADF Pipelines
       run: |
         # Read the content of pipeline1.json and pipeline2.json
-        pipeline1=$(cat ./pipelines/pipeline1.json)
-        pipeline2=$(cat ./pipelines/pipeline2.json)
+        pipeline1=$(cat ./pipelines/Testpipeline1.json)
+        pipeline2=$(cat ./pipelines/AdobeExportPipeline.json)
         
         # Construct the JSON object with the pipeline contents
         pipelines=$(jq -n \
@@ -36,11 +36,11 @@ jobs:
           --arg pipeline2 "$pipeline2" \
           '[
             {
-              "name": "Pipeline1",
+              "name": "TestPipeline1",
               "definition": $pipeline1 | fromjson
             },
             {
-              "name": "Pipeline2",
+              "name": "AdobeExportPipeline",
               "definition": $pipeline2 | fromjson
             }
           ]')
