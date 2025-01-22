@@ -54,7 +54,7 @@ jobs:
 
         # Deploy using Bicep (or ARM template)
         az deployment group create \
-          --resource-group <komatsu> \
+          --resource-group "komatsu" \
           --location eastus \
           --template-file ./bicep/modules/testadf.bicep \
           --parameters dataFactoryName=ADF033 \
