@@ -3,10 +3,10 @@ name: Deploy ADF Pipelines
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the main branch
+      - souvikTestADF  # Trigger the workflow on push to the main branch
   pull_request:
     branches:
-      - main  # Trigger the workflow on pull requests to the main branch
+      - souvikTestADF  # Trigger the workflow on pull requests to the main branch
 
 jobs:
   deploy:
@@ -49,6 +49,6 @@ jobs:
         # Deploy using Bicep (or ARM template)
         az deployment group create \
           --resource-group "komatsu" \
-          --template-file ./bicep/modules/testadf.bicep \
+          --template-file ./bicep/modules/linkedservice.bicep \
           --parameters dataFactoryName=ADF033 \
           --parameters linkedService="$linkedServices"

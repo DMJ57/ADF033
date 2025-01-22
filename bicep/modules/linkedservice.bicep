@@ -1,19 +1,15 @@
 targetScope = 'resourceGroup'  // Set targetScope to resourceGroup
 
 param dataFactoryName string
-param linkedService array
+param linkedServices array
 
 resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   name: dataFactoryName
   location: 'East US'
 }
 
-resource linkedServiceDeploy 'Microsoft.Resources/deployments@2021-04-01' = {
-    name: 'LinkedServiceDeployment'
-    properties: {
-      mode: 'Incremental'
-      templateLink: {
-        uri: 'https://github.com/DMJ57/ADF033/dataset/TestDataset.json'
-      }
-    }
-  }
+resource pipelinesResource 'Microsoft.DataFactory/factories/pipelines@2018-06-01' = [for linkedService in linkedServices: {
+  parent: dataFactory
+  name: linkedService.name
+  properties: linkedService.definition
+}]
