@@ -20,7 +20,7 @@ param storageAccount1 string = 'Y4Fo0vh4xap7U+VravqaJftr++ToUycBATaNeOJ1eLNJZkKy
 //   properties: linkedService.definition
 // }]
 
-resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2022-10-01' = [for linkedService in linkedServices: {
+resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-01' = [for linkedService in linkedServices: {
   parent: dataFactory
   name: linkedService.name  // Removed the ${dataFactory.name}/ part
   properties: {
