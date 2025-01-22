@@ -8,7 +8,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   location: 'East US'
 }
 
-resource pipelinesResource 'Microsoft.DataFactory/factories/pipelines@2018-06-01' = [for linkedService in linkedServices: {
+resource LinkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-01' = [for linkedService in linkedServices: {
   parent: dataFactory
   name: linkedService.name
   properties: linkedService.definition
