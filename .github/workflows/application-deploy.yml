@@ -42,7 +42,7 @@ jobs:
           --arg linkedService1 "$linkedService1" \
           '[
             {
-              "name": "TestLinkedService",
+              "name": "NewBlobStorage",
               "definition": $linkedService1 | fromjson
             }
           ]')
