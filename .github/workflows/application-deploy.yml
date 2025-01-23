@@ -9,7 +9,37 @@ on:
       - souvikTestADF  # Trigger the workflow on pull requests to the main branch
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Azure CLI
+      uses: azure/CLI@v1
+      with:
+        azcliversion: '2.30.0'  # Correct input for specifying Azure CLI version
+        inlineScript: |
+          az --version  # Example inline script to verify Azure CLI setup
+
+    - name: Install jq
+      run: sudo apt-get install jq
+
+    - name: Login to Azure
+      uses: azure/login@v1 
+      with:
+        creds: ${{ secrets.AZURE_SPN_CREDENTIAL }}
+
+    - name: Validate Bicep Template
+      run: |
+        az deployment group validate \
+          --resource-group komatsu \
+          --template-file ./bicep/modules/linkedservice.bicep \
+          --template-file ./bicep/modules/trigger.bicep \
+
   deploy:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -31,12 +61,12 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_SPN_CREDENTIAL }}  # Make sure to store your Azure credentials as secrets
 
-    - name: Read pipeline JSON files and deploy
+    - name: Read linkedService JSON files and deploy
       run: |
         # Ensure the correct path to the JSON files
         linkedService1=$(cat ./linkedService/TestLinkedService.json)
 
-        # Construct a JSON array with the pipeline contents
+        # Construct a JSON array with the linkedService contents
         linkedServices=$(jq -n \
           --arg linkedService1 "$linkedService1" \
           '[
@@ -52,3 +82,25 @@ jobs:
           --template-file ./bicep/modules/linkedservice.bicep \
           --parameters dataFactoryName=ADF033 \
           --parameters linkedServices="$linkedServices"
+
+    - name: Read Trigger JSON files and deploy
+      run: |
+          # Ensure the correct path to the JSON files
+          TestTrigger1=$(cat ./trigger/TestTrigger.json)
+  
+          # Construct a JSON array with the Trigger contents
+          TestTrigger=$(jq -n \
+            --arg TestTrigger1 "$TestTrigger1" \
+            '[
+              {
+                "name": "BicepTrigger",
+                "definition": $TestTrigger1 | fromjson
+              }
+            ]')
+  
+          # Deploy using Bicep (or ARM template)
+          az deployment group create \
+            --resource-group "komatsu" \
+            --template-file ./bicep/modules/trigger.bicep \
+            --parameters dataFactoryName=ADF033 \
+            --parameters triggers="$TestTrigger"
