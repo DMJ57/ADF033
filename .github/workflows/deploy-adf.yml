@@ -13,48 +13,67 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout code
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Step 2: Set up Azure CLI
     - name: Set up Azure CLI
       uses: azure/CLI@v1
       with:
-        azcliversion: '2.30.0'  # Correct input for specifying Azure CLI version
-        inlineScript: |
-          az --version  # Example inline script to verify Azure CLI setup
+        azcliversion: '2.30.0'
 
+    # Step 3: Install jq for JSON processing
     - name: Install jq
-      run: sudo apt-get install jq
+      run: sudo apt-get install -y jq
 
+    # Step 4: Login to Azure
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_SPN_CREDENTIAL }}  # Make sure to store your Azure credentials as secrets
+        creds: ${{ secrets.AZURE_SPN_CREDENTIAL }}  # Ensure Azure credentials are stored as secrets
 
-    - name: Read pipeline JSON files and deploy
+    # Step 5: Read pipeline JSON files and deploy
+    - name: Deploy ADF Pipelines
+      env:
+        RESOURCE_GROUP: "komatsu"
+        DATA_FACTORY_NAME: "ADF033"
+        BICEP_TEMPLATE: "./bicep/modules/testadf.bicep"
       run: |
-        # Ensure the correct path to the JSON files
+        echo "Reading pipeline JSON definitions..."
+        
+        # Read pipeline JSON files
         pipeline1=$(cat ./pipeline/TestPipeline1.json)
         pipeline2=$(cat ./pipeline/AdobeExportPipeline.json)
-        
-        # Construct a JSON array with the pipeline contents
+        pipeline3=$(cat ./pipeline/TestLinkedService.json)
+
+
+        # Construct JSON array with pipeline definitions
         pipelines=$(jq -n \
-          --arg pipeline1 "$pipeline1" \
-          --arg pipeline2 "$pipeline2" \
+          --argjson pipeline1 "$pipeline1" \
+          --argjson pipeline2 "$pipeline2" \
+          --argjson pipeline3 "$pipeline3" \
+
           '[
             {
               "name": "TestPipeline1",
-              "definition": $pipeline1 | fromjson
+              "activities": $pipeline1.activities
             },
             {
               "name": "AdobeExportPipeline",
-              "definition": $pipeline2 | fromjson
+              "activities": $pipeline2.activities
+            },
+            {
+              "name": "TestLinkedService",
+              "activities": $pipeline3.activities
             }
           ]')
 
-        # Deploy using Bicep (or ARM template)
+        echo "Deploying pipelines to Data Factory: $DATA_FACTORY_NAME"
+
+        # Deploy pipelines using Azure CLI
         az deployment group create \
-          --resource-group "komatsu" \
-          --template-file ./bicep/modules/testadf.bicep \
-          --parameters dataFactoryName=ADF033 \
+          --resource-group $RESOURCE_GROUP \
+          --template-file $BICEP_TEMPLATE \
+          --parameters dataFactoryName=$DATA_FACTORY_NAME \
           --parameters pipelines="$pipelines"
